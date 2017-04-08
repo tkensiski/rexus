@@ -1,0 +1,2 @@
+# rexus
+Hydroponic Growing Automation
