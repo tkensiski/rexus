@@ -1,5 +1,10 @@
 from __future__ import division
-from rexus import config
+import logging
+
+from rexus.config import soil_moisture as config
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 class SoilMoisture:
 
@@ -57,13 +62,16 @@ class Point:
         
 
 if __name__ == '__main__':
+    import random
 
-    import sys
-    voltage = float(sys.argv[1] if sys.argv[1] else 0)
+    for i in range(0,10):
+        voltage = random.uniform(0.00,3.00)
 
-    sm = SoilMoisture()
-    vwc = sm.find_vwc(voltage)
-    rvwc = sm.find_relative_vwc(vwc)
+        voltage = float(voltage)
 
-    print "Voltage: {volt:0.2f} is VWC: {vwc:0.2f}; Relative VWC: {rvwc:0.2f}".format(
-        volt = voltage, vwc=vwc, rvwc=rvwc )
+        sm = SoilMoisture()
+        vwc = sm.find_vwc(voltage)
+        rvwc = sm.find_relative_vwc(vwc)
+
+        print "Voltage: {volt:0.2f} is VWC: {vwc:0.2f}; Relative VWC: {rvwc:0.2f}".format(
+            volt = voltage, vwc=vwc, rvwc=rvwc )

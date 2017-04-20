@@ -7,7 +7,7 @@ from Phidgets.Devices.InterfaceKit import InterfaceKit
 from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
 
 from Display import Display
-from Devices.SoilMoisture import SoilMoisture
+from devices.SoilMoisture import SoilMoisture
 
 class DevicePoller():
 
