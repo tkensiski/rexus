@@ -1,45 +1,46 @@
-import time
-from pprint import pprint
+import logging
 
 from Phidgets.Devices.TextLCD import TextLCD, TextLCD_ScreenSize
 from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
 
-class Display():
+from rexus.config import Main as MainConfig
+from rexus.config import Display as DisplayConfig
+from rexus.devices import InterfaceDevice
 
-    display = None
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
-    BACKLIGHT = True
-    CONTRAST = 180
-    SIZE = TextLCD_ScreenSize.PHIDGET_TEXTLCD_SCREEN_4x40
+class Display(InterfaceDevice):
 
-    def __init__(self):
-        self.connect()
-        self.setup()
+    interface = None
+    config = None
+
+    row_count = None
+    column_count = None
+
+    def __init__(self, config=None):
+        super(Display, self).__init__(interface=TextLCD(), config=config)
+        super(Display, self).connect()
+
+        self.init_interface()
         self.clear_screen()
 
-    def connect(self):
-        self.display = TextLCD()
-        self.display.openPhidget()
-        self.display.waitForAttach(10000)
-
-    def setup(self):
+    def init_interface(self):
         # Configure the display
-        self.display.setBacklight(self.BACKLIGHT)
-        self.display.setContrast(self.CONTRAST)
-        self.display.setScreenSize(self.SIZE)
-        self.display.setScreenIndex(0)
+        self.interface.setBacklight(DisplayConfig.BACKLIGHT)
+        self.interface.setContrast(DisplayConfig.CONTRAST)
+        self.interface.setScreenSize(DisplayConfig.SIZE)
+        self.interface.setScreenIndex(0)
+
+        self.row_count = self.interface.getRowCount()
+        self.column_count = self.interface.getColumnCount()
 
     def clear_screen(self):
-        for row in range(0,self.display.getRowCount()):
+        for row in range(0, self.row_count):
             self.write(row, "")
 
     def write(self, row, text):
         try:
-            self.display.setDisplayString(row, text)
+            self.interface.setDisplayString(row, text)
         except PhidgetException as e:
-            print e.__dict__
-        #time.sleep(1)
-
-if __name__ == '__main__':
-        display = Display()
-        display.write(1, 'Testing a new message for kaser')
+            logger.error(e.__dict__)

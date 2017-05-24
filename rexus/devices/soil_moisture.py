@@ -1,12 +1,30 @@
 from __future__ import division
 import logging
 
-from rexus.config import soil_moisture as config
+from rexus.config import Main as MainConfig
+from rexus.config import SoilMoisture as SoilMoistureConfig
+from rexus.devices import AnalogDevice
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-class SoilMoisture:
+class SoilMoisture(AnalogDevice):
+    config = None
+    interface = None
+    input_position = None
+
+    raw_value = None
+    raw_voltage = None
+
+    vwc = None
+    rvwc = None
+
+    def __init__(self, config=None, interface=None, input_position=None):
+        super(SoilMoisture, self).__init__(
+            config=config,
+            interface=interface,
+            input_position=input_position
+        )
 
     def find_slope(self, pointA, pointB):
         rise = float(pointB.x) - float(pointA.x)
@@ -15,25 +33,21 @@ class SoilMoisture:
 
         return slope
 
-    def find_closest_voltages(self, voltage, soil_moisture=config.soil_moisture):
-
+    def find_closest_voltages(self, voltage, soil_moisture=SoilMoistureConfig.soil_moisture):
         point1 = min(soil_moisture.values(), key=lambda x:abs(x-voltage))
         soil_moisture = dict(soil_moisture)
-        del soil_moisture[config.soil_moisture_by_voltage[str(point1)]]
+        del soil_moisture[SoilMoistureConfig.soil_moisture_by_voltage[str(point1)]]
         point2 = min(soil_moisture.values(), key=lambda x:abs(x-voltage))
 
         return (point1, point2)
 
-    def lookup_vwc_from_voltage(self, voltage):
-        return config.soil_moisture.keys()[config.soil_moisture.values().index(voltage)]
-
     def find_vwc(self, voltage):
-        if voltage <= config.soil_moisture[0]:
+        if voltage <= SoilMoistureConfig.soil_moisture[0]:
             return 0
 
         v1, v2 = self.find_closest_voltages(voltage)
-        point1 = Point(vwc=config.soil_moisture_by_voltage[str(v1)], voltage=v1)
-        point2 = Point(vwc=config.soil_moisture_by_voltage[str(v2)], voltage=v2)
+        point1 = Point(vwc=SoilMoistureConfig.soil_moisture_by_voltage[str(v1)], voltage=v1)
+        point2 = Point(vwc=SoilMoistureConfig.soil_moisture_by_voltage[str(v2)], voltage=v2)
         m = self.find_slope(point1, point2)
 
         vwc = m * (voltage - point1.y) + point1.x
@@ -54,12 +68,21 @@ class SoilMoisture:
 
         return rw
 
+    # Return the value that we want to display
+    def get_value(self):
+        self.vwc = self.find_vwc(self.raw_voltage)
+        self.rvwc = self.find_relative_vwc(self.vwc)
+        return self.rvwc
+
+    def __repr__(self):
+        return "<SoilMoisture: RVWC: {value:0.2f}%> ".format(value=self.get_value())
+
 
 class Point:
     def __init__ (self, vwc, voltage):
         self.x = vwc
         self.y = voltage
-        
+
 
 if __name__ == '__main__':
     import random

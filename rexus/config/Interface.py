@@ -1,1 +1,0 @@
-connect_timeout = 2 * 60 * 1000 # In milliseconds
