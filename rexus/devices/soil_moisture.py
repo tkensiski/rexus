@@ -8,6 +8,17 @@ from rexus.devices import AnalogDevice
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
+"""
+This SoilMoisture class supports the VH400 from vegetronix
+https://www.vegetronix.com/Products/VH400/
+
+Why this sensor over other cheaper ones:
+'Because our probe measures the dielectric constant of the soil using
+transmission line techniques, it is insensitive to water salinity, and will
+not corrode over time as does conductivity based probes. Our probes are
+small, rugged, and low power.'
+"""
+
 class SoilMoisture(AnalogDevice):
     config = None
     interface = None

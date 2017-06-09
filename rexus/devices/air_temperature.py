@@ -1,15 +1,16 @@
 from __future__ import division
 import logging
 
-#from Phidgets.Devices.InterfaceKit import InterfaceKit
-from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
-
 from rexus.config import Main as MainConfig
 from rexus.config import AirTemperature as AirTemperatureConfig
 from rexus.devices import AnalogDevice
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+"""
+Supports: http://www.phidgets.com/products.php?category=35&product_id=1124_0
+"""
 
 class AirTemperature(AnalogDevice):
     config = None
@@ -29,7 +30,7 @@ class AirTemperature(AnalogDevice):
         )
 
     def getMetricValue(self, raw_value=None):
-        return (raw_value * 0.2222) - 61.111
+        return (raw_value * 200 * 0.2222) - 61.111
 
     def getImperialValue(self, metric_value=None):
         return (metric_value * 9/5) + 32
@@ -48,6 +49,3 @@ class AirTemperature(AnalogDevice):
             value=self.get_value(),
             unit=unit
         )
-
-
-

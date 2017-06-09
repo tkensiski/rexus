@@ -26,5 +26,8 @@ class PHElectrode(AnalogDevice):
             input_position=input_position
         )
 
+        # Not implemented yet
+        pass
+
     def __repr__(self):
-        return "<SoilMoisture: RVWC: {value:0.2f}%> ".format(value=self.get_value())
+        return "<PH Electrode: value: {value:0.2f}> ".format(value=self.get_value())

@@ -7,6 +7,93 @@ from rexus.config import Device as DeviceConfig
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
+class DeviceLoader(object):
+    device_classes = {
+        # class_name : getattr(module, class_name)
+    }
+
+    def load_device_class(self, device_type=None):
+        logger.info('Loading class for device type: {device_type}'.format(device_type=device_type))
+
+        if device_type in self.device_classes:
+            logger.debug('Class already loaded for device type: {device_type}'.format(
+                device_type=device_type))
+            return self.device_classes.get(device_type)
+
+        return _load_device_class(device_type=device_type)
+
+    def _convert_device_type_to_class_name(self, device_type=None):
+        device_type = device_type.replace('_', ' ')
+        device_type = device_type.title()
+        device_type = device_type.replace(' ', '')
+
+        return device_type
+
+    def _load_device_class(self, device_type=None):
+        class_name = self._convert_device_type_to_class_name(device_type)
+
+        module_name = 'rexus.devices.{name}'.format(name=device_type)
+        module = __import__(module_name, fromlist=[class_name])
+        device_class = getattr(module, class_name)
+
+        self._memoize_device_class(device_type=device_type, device_class=device_class)
+
+        return device_class
+
+    def _memoize_device_class(self, device_type=None, device_class=None):
+        if device_type in self.device_classes:
+            return True, self.device_classes.get(device_type)
+
+        self.device_classes[class_name] = device_class
+
+
+class Interface(object):
+    interface = None
+    config = {}
+    channels = {}
+
+    def __init__(self, config=None, interface=None):
+
+        if interface is None:
+            raise Exception('No interface supplied, cannot connect')
+
+        logger.debug('interface: {interface}'.format(interface=interface))
+        self.interface = interface
+
+        self.channels = self.setup_channels()
+
+    def setup_channels(self):
+        channels = {}
+
+        device_loader = DeviceLoader()
+
+        for channel, device_id in self.config['channels']:
+            if device_id is None:
+                logger.info('No device plugged into channel {channel}'.format(channel=channel))
+                continue
+
+            logger.info('Loading analog device (ID: {id}) on channel: {channel}'.format(
+                id=device_id, channel=channel))
+
+            # Fetch the device config
+            device_config = MainConfig.devices.get(device_id)
+
+            device_type = DeviceConfig.device_types.get(device_config.get('type_id'))
+            device_class = device_loader.load_device_class(device_type=device_type)
+
+            channels[i] = device_class(
+                config=device_config,
+                interface=self,
+                channel=channel
+            )
+
+        return channels
+
+    def poll_all_channels(self):
+        for channel_id, device in self.channels.iteritems():
+            device.update_voltage()
+
+
 class Device(object):
     device_type = None
     interface = None
@@ -29,81 +116,54 @@ class Device(object):
         self.interface = interface
 
 
-class InterfaceDevice(Device):
-    device_type = None
-    interface = None
-    config = None
-
-    def __init__(self, config=None, interface=None):
-        super(InterfaceDevice, self).__init__(config=config, interface=interface)
-        self.config = config
-        self.interface = interface
-
-    def disconnect(self):
-        logger.debug('Closing connection to device: {name}'.format(
-            name=self.config.get('name')))
-        self.interface.closePhidget()
-
-    def connect(self):
-        print 'Connecting'
-        logger.info('Connecting to Remote Interface: {name}'.format(
-            type=('Remote' if DeviceConfig.connect_remote else 'Local'),
-            name=self.config.get('name')
-        ))
-
-        logger.debug(self.config)
-
-        if DeviceConfig.connect_remote:
-            self.interface.openRemote(
-                serverID=self.config.get('server_id'),
-                serial=self.config.get('serial_number'),
-                password=self.config.get('server_password')
-            )
-        else:
-            self.interface.OpenPhidget()
-
-        logger.debug('Waiting {seconds} seconds for device to attach...'.format(
-            seconds=(DeviceConfig.connect_timeout/1000)))
-        self.interface.waitForAttach(DeviceConfig.connect_timeout)
-
-
 class AnalogDevice(Device):
-    device_type = None
-    interface = None
-    config = None
-    input_position = None
+    channel = None
+    voltage = None
 
-    raw_value = None
-    raw_voltage = None
-
-    def __init__(self, config=None, interface=None, input_position=None):
+    def __init__(self, config=None, interface=None, channel=None):
         super(AnalogDevice, self).__init__(config=config, interface=interface)
 
-        if input_position is None:
-            raise Exception('No interface supplied, cannot create device')
+        if channel is None:
+            raise Exception('No channel supplied, cannot read device')
 
-        self.init_device(input_position)
+        self.channel = channel
 
-    def init_device(self, input_position):
-        self.config['input_position'] = input_position
+        self.init_device()
 
-        self.raw_value = self.interface.getSensorValue(input_position)
-        self.raw_voltage = self.raw_value / 200
+    def init_device(self):
+        self.update_voltage()
 
-    def update_values(self):
-        self.raw_value = self.interface.getSensorValue(self.config['input_position'])
-        self.raw_voltage = self.raw_value / 200
-
+    def update_voltage(self):
+        self.voltage = self.interface.read_channel(channel=self.channel)
 
     # Return the value that we want to display
     # Override this in the top level class
     def get_value(self):
-        return self.raw_voltage
+        return self.voltage
+
+    def __repr__(self):
+        unit = 'voltage'
+        return "<AnalogDevice: {value:0.2f}{unit}> ".format(
+            value=self.get_value(),
+            unit=unit
+        )
 
 
 class DigitalDevice(Device):
-    device_type = None
-    interface = None
+    active = None
 
-    def __init__(self, interface=None, config=None):
-        super(DigitalDevice, self).__init__(config=config, interface=interface)
+    def __init__(self, config=None, interface=None):
+        super(DigitalInputDevice, self).__init__(config=config, interface=interface)
+
+        self.active = None
+
+    # Return the value that we want to display
+    # Override this in the top level class
+    def get_state(self):
+        return self.active
+
+    def __repr__(self):
+        return "<DigitalDevice: Active:{value}> ".format(
+            value=self.get_state(),
+        )
+

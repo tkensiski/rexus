@@ -11,6 +11,11 @@ from rexus.devices import AnalogDevice
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
+"""
+This SoilTemperature class supports the THERM200 from vegetronix
+https://www.vegetronix.com/Products/THERM200/
+"""
+
 class SoilTemperature(AnalogDevice):
     config = None
     interface = None

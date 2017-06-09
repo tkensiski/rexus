@@ -11,6 +11,19 @@ from rexus.devices import AnalogDevice
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
+
+"""
+This RelativeHumidity class supports the VG-HUMID from vegetronix
+https://www.vegetronix.com/Products/VG-HUMID/
+
+Why this sensor over other cheaper ones:
+'The sensor and electronics are enclosed in a weather resistant flanged box for easy
+mounting. The electronic sensor is directly connected to the outside air through a
+small inlet tube, on the bottom side of the box near the cable gland. Because the small
+inlet tube isolates the sensor from the rest of the air volume in the box, latency
+to changes in relative air humidity is reduced.'
+"""
+
 class RelativeHumidity(AnalogDevice):
     config = None
     interface = None

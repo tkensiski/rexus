@@ -20,3 +20,7 @@ class Relay():
         if not config:
             raise Exception('No config data for Relay')
 
+        # Not implemented yet
+        pass
+
+
