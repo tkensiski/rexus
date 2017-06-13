@@ -3,6 +3,9 @@ import logging
 name = 'Rexus'
 version = '1.0.0' # Import this from VERSION
 
+# Should we mock the channel data, useful for local development
+mock_channels = True
+
 display_units = 'imperial'
 
 LOG_LEVEL = logging.DEBUG
@@ -57,6 +60,12 @@ devices = {
         'name': 'Temperature 1',
         'slug': 'Tmp1',
         'type_id': 3,
+        # # Mock is optional, there is a default range set shown below
+        # # if you want to define a different range just set these values
+        # 'mock': {
+        #     'min_voltage': 1.45,
+        #     'max_voltage': 1.60,
+        # },
     },
     3: {
         'name': 'Temperature 2',

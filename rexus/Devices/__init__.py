@@ -140,12 +140,14 @@ class AnalogDevice(Device):
         if MainConfig.mock_channels is False:
             self.voltage = self.interface.read_channel(channel=self.channel)
         else:
-            import random
+            # Mock out a random voltage!
+            # Try and pull the mock otherwise use some defaults
             mock = self.config.get('mock', {})
             min_voltage = mock.get('min_voltage', 1.45)
             max_voltage = mock.get('max_voltage', 1.60)
+
+            import random
             self.voltage = random.uniform(min_voltage, max_voltage)
-            # Return mock data
 
     # Return the value that we want to display
     # Override this in the top level class
