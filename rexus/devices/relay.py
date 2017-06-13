@@ -1,9 +1,6 @@
 from __future__ import division
 import logging
 
-#from Phidgets.Devices.InterfaceKit import InterfaceKit
-from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
-
 from rexus.config import Main as MainConfig
 from rexus.config import Relay as RelayConfig
 
