@@ -12,7 +12,7 @@ class DeviceLoader(object):
         # class_name : getattr(module, class_name)
     }
 
-    def load_device_class(self, device_type=None):
+    def load_device_class(self, device_type):
         logger.info('Loading class for device type: {device_type}'.format(device_type=device_type))
 
         if device_type in self.device_classes:
@@ -22,14 +22,14 @@ class DeviceLoader(object):
 
         return _load_device_class(device_type=device_type)
 
-    def _convert_device_type_to_class_name(self, device_type=None):
+    def _convert_device_type_to_class_name(self, device_type):
         device_type = device_type.replace('_', ' ')
         device_type = device_type.title()
         device_type = device_type.replace(' ', '')
 
         return device_type
 
-    def _load_device_class(self, device_type=None):
+    def _load_device_class(self, device_type):
         class_name = self._convert_device_type_to_class_name(device_type)
 
         module_name = 'rexus.devices.{name}'.format(name=device_type)
@@ -40,7 +40,7 @@ class DeviceLoader(object):
 
         return device_class
 
-    def _memoize_device_class(self, device_type=None, device_class=None):
+    def _memoize_device_class(self, device_type, device_class):
         if device_type in self.device_classes:
             return True, self.device_classes.get(device_type)
 
@@ -48,11 +48,16 @@ class DeviceLoader(object):
 
 
 class Interface(object):
-    interface = None
-    config = {}
-    channels = {}
 
-    def __init__(self, config=None, interface=None):
+    def __init__(self, config, interface):
+        if config is None:
+            raise Exception('No config data for interface, cannot connect')
+
+        logger.debug('config: {config}'.format(config=config))
+        self.config = config
+
+        self.device_type = DeviceConfig.device_types[config['type_id']]
+        logger.info('Setting up {device_type} device'.format(device_type=self.device_type))
 
         if interface is None:
             raise Exception('No interface supplied, cannot connect')
@@ -95,19 +100,17 @@ class Interface(object):
 
 
 class Device(object):
-    device_type = None
-    interface = None
-    config = None
 
-    def __init__(self, config=None, interface=None):
-        self.device_type = DeviceConfig.device_types[config['type_id']]
-        logger.info('Setting up {device_type} device'.format(device_type=self.device_type))
+    def __init__(self, config, interface):
 
         if config is None:
             raise Exception('No config data for interface, cannot connect')
 
         logger.debug('config: {config}'.format(config=config))
         self.config = config
+
+        self.device_type = DeviceConfig.device_types[config['type_id']]
+        logger.info('Setting up {device_type} device'.format(device_type=self.device_type))
 
         if interface is None:
             raise Exception('No interface supplied, cannot create device')
@@ -117,16 +120,15 @@ class Device(object):
 
 
 class AnalogDevice(Device):
-    channel = None
-    voltage = None
 
-    def __init__(self, config=None, interface=None, channel=None):
+    def __init__(self, config, interface, channel):
         super(AnalogDevice, self).__init__(config=config, interface=interface)
 
         if channel is None:
             raise Exception('No channel supplied, cannot read device')
 
         self.channel = channel
+        self.voltage = None
 
         self.init_device()
 
@@ -134,7 +136,16 @@ class AnalogDevice(Device):
         self.update_voltage()
 
     def update_voltage(self):
-        self.voltage = self.interface.read_channel(channel=self.channel)
+        # Check to see if we are in mock mode where we send mock voltages back
+        if MainConfig.mock_channels is False:
+            self.voltage = self.interface.read_channel(channel=self.channel)
+        else:
+            import random
+            mock = self.config.get('mock', {})
+            min_voltage = mock.get('min_voltage', 1.45)
+            max_voltage = mock.get('max_voltage', 1.60)
+            self.voltage = random.uniform(min_voltage, max_voltage)
+            # Return mock data
 
     # Return the value that we want to display
     # Override this in the top level class
@@ -150,9 +161,8 @@ class AnalogDevice(Device):
 
 
 class DigitalDevice(Device):
-    active = None
 
-    def __init__(self, config=None, interface=None):
+    def __init__(self, config, interface):
         super(DigitalInputDevice, self).__init__(config=config, interface=interface)
 
         self.active = None
