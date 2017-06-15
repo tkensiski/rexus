@@ -1,6 +1,0 @@
-- Setup database for time series data: https://github.com/influxdata/influxdb
-- Setup database for config data (SqlLite or mysql maybe postgres???)
-- Setup device formula configs so that way we can add new device types by adding a new config entry for them rather than a whole new class. That being said if thats not easy to do we can always have a base device class for each type of sensor and we extend those with the formula that changes between each brand of sensor.
-- Setup interface that can display the time series data (design for the 7" touch screen but also let it scale for larger screens)
-- Setup a backend system to pump data to (standalone and/or server setup that people can use)
-- pick a license
