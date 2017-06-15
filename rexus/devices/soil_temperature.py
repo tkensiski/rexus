@@ -31,10 +31,10 @@ class SoilTemperature(AnalogDevice):
         )
 
     def getMetricValue(self, raw_value=None):
-        return (raw_value * 41.67) -40
+        return (raw_value * 41.67) - 40
 
     def getImperialValue(self, raw_value=None):
-        return (raw_value * 75.006) -40
+        return (raw_value * 75.006) - 40
 
     # Return the value that we want to display
     def get_value(self):

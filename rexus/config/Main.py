@@ -12,15 +12,56 @@ LOG_LEVEL = logging.DEBUG
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 device_types = {
-    0: 'rasberry_pi',
-    1: 'soil_moisture',
-    2: 'soil_temperature',
-    3: 'air_temperature',
-    4: 'relative_humidity',
-    5: 'relay',
-    6: 'ph_electrode',
-    7: 'display',
-    8: 'adc',
+    """
+    id: {
+        'name': DEVICE_TYPE,
+        # Optional, not required
+        # see https://github.com/danthedeckie/simpleeval for more information
+        # Must use {VOLTAGE} to have the voltage injected into the equation before
+        # simple_eval is used
+        'forumla': THE_FORMULA_TO_CONVERT_RAW_VOLTAGE_TO_VALUE
+        # EX: '{VOTLAGE} * 200 * 0.2222 - 61.111'
+        #
+        # When a formula cannot be written and it involved more data
+        # such as a lookup table we can specify the specific device file/class to use
+        # 'device_file': 'soil_moisture_vh400',
+        # 'device_class': 'SoilMoistureVH400'
+    },
+    """
+    0: {
+        'type': 'rasberry_pi',
+        'model': '3 Model B',
+        'formula': None
+    },
+    1: {
+        'type': 'soil_moisture',
+        'model': 'VH400',
+        'forumla': None,
+        'device_file': 'soil_moisture_vh400',
+        'device_class': 'SoilMoistureVH400'
+    },
+    2: {
+        'type': 'soil_temperature',
+        'model': 'TERM200'
+        'formula_imperial': "{VOTLAGE} * 75.006 - 40",
+        'formula_metric' : "{VOTLAGE} * 41.67 - 40",
+    },
+    3: {
+        'type': 'air_temperature',
+        'formula_imperial': "({VOTLAGE} * 200 * 0.2222 - 61.111) * 9/5 + 32",
+        'formula_metric': "{VOTLAGE} * 200 * 0.2222 - 61.111",
+    },
+    4: {
+        'type': 'relative_humidity',
+        'formula_imperial': "{VOTLAGE} * 33.33",
+        'formula_metric': "{VOTLAGE} * 33.33",
+    },
+    5: { 'type': 'relay' },
+    6: {
+        'type': 'ph_electrode',
+        'formula': "{VOTLAGE}",
+    },
+    8: { 'type': 'adc' }
 }
 
 # Move this to a database at some point

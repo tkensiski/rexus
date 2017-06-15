@@ -2,7 +2,7 @@
 from __future__ import division
 import logging
 
-from rexus.config import Device as DeviceConfig
+from rexus.config import Main as MainConfig
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -56,7 +56,7 @@ class Interface(object):
         logger.debug('config: {config}'.format(config=config))
         self.config = config
 
-        self.device_type = DeviceConfig.device_types[config['type_id']]
+        self.device_type = MainConfig.device_types[config['type_id']]
         logger.info('Setting up {device_type} device'.format(device_type=self.device_type))
 
         if interface is None:
@@ -83,7 +83,7 @@ class Interface(object):
             # Fetch the device config
             device_config = MainConfig.devices.get(device_id)
 
-            device_type = DeviceConfig.device_types.get(device_config.get('type_id'))
+            device_type = MainConfig.device_types.get(device_config.get('type_id'))
             device_class = device_loader.load_device_class(device_type=device_type)
 
             channels[i] = device_class(
@@ -109,7 +109,7 @@ class Device(object):
         logger.debug('config: {config}'.format(config=config))
         self.config = config
 
-        self.device_type = DeviceConfig.device_types[config['type_id']]
+        self.device_type = MainConfig.device_types[config['type_id']]
         logger.info('Setting up {device_type} device'.format(device_type=self.device_type))
 
         if interface is None:
