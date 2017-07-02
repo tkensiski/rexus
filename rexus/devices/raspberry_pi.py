@@ -12,7 +12,7 @@ from rexus.devices.adc import ADC
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-class RasberryPi(object):
+class RaspberryPi(object):
 
     # Make sure we keep track of what bus addresses that we init
     # so we dont init double and rather alert that theres a duplicate

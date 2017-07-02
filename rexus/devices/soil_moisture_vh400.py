@@ -93,19 +93,3 @@ class Point:
     def __init__ (self, vwc, voltage):
         self.x = vwc
         self.y = voltage
-
-
-if __name__ == '__main__':
-    import random
-
-    for i in range(0,10):
-        voltage = random.uniform(0.00,3.00)
-
-        voltage = float(voltage)
-
-        sm = SoilMoisture()
-        vwc = sm.find_vwc(voltage)
-        rvwc = sm.find_relative_vwc(vwc)
-
-        print "Voltage: {volt:0.2f} is VWC: {vwc:0.2f}; Relative VWC: {rvwc:0.2f}".format(
-            volt = voltage, vwc=vwc, rvwc=rvwc )

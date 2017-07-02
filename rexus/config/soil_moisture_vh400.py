@@ -1,5 +1,5 @@
 # VWC to Voltage of the sensor
-# Number of points will dictate the Human readable % so that way after a 
+# Number of points will dictate the Human readable % so that way after a
 # watering it will read 100% for a period of time
 # How To Get Datapoints: http://www.vegetronix.com/TechInfo/How-To-Measure-VWC.phtml
 soil_moisture = {
