@@ -1,13 +1,5 @@
-from orator import DatabaseManager
-from orator import Model
-
-from rexus import config as app_config
+from rexus import database
 from rexus.models import config, devices, device_classes, device_formulas, device_types
-
-
-def setup_db():
-    db = DatabaseManager(app_config.DATABASES)
-    Model.set_connection_resolver(db)
 
 
 def main():
@@ -21,5 +13,5 @@ def main():
 
 
 if __name__ == '__main__':
-    setup_db()
+    database.configure()
     main()
