@@ -1,8 +1,6 @@
 from __future__ import division
 import logging
 
-from rexus.config import Main as MainConfig
-from rexus.config import SoilMoisture as SoilMoistureConfig
 from rexus.devices import AnalogDevice
 
 logger = logging.getLogger(__name__)
@@ -19,6 +17,7 @@ not corrode over time as does conductivity based probes. Our probes are
 small, rugged, and low power.'
 """
 
+
 class SoilMoisture(AnalogDevice):
     config = None
     interface = None
@@ -30,12 +29,38 @@ class SoilMoisture(AnalogDevice):
     vwc = None
     rvwc = None
 
+    # VWC to Voltage of the sensor
+    # Number of points will dictate the Human readable % so that way after a
+    # watering it will read 100% for a period of time
+    # How To Get Datapoints: http://www.vegetronix.com/TechInfo/How-To-Measure-VWC.phtml
+    soil_moisture = {
+        # Volumetric Water Content (vwc): Sensor Voltage (v)
+        # x : y
+        0: 0.26,
+        5: 0.65,
+        10: 1.05,
+        15: 1.25,
+        20: 1.64,
+        25: 1.85,
+        30: 2.00,
+        35: 2.10,
+        40: 2.38,
+        45: 2.50,
+        50: 2.60,
+        55: 2.92
+    }
+
+    soil_moisture_by_voltage = {}
+
     def __init__(self, config=None, interface=None, input_position=None):
         super(SoilMoisture, self).__init__(
             config=config,
             interface=interface,
             input_position=input_position
         )
+
+        for key, value in self.soil_moisture.iteritems():
+            self.soil_moisture_by_voltage[str(value)] = key
 
     def find_slope(self, pointA, pointB):
         rise = float(pointB.x) - float(pointA.x)
@@ -44,21 +69,21 @@ class SoilMoisture(AnalogDevice):
 
         return slope
 
-    def find_closest_voltages(self, voltage, soil_moisture=SoilMoistureConfig.soil_moisture):
-        point1 = min(soil_moisture.values(), key=lambda x:abs(x-voltage))
+    def find_closest_voltages(self, voltage, soil_moisture):
+        point1 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
         soil_moisture = dict(soil_moisture)
-        del soil_moisture[SoilMoistureConfig.soil_moisture_by_voltage[str(point1)]]
-        point2 = min(soil_moisture.values(), key=lambda x:abs(x-voltage))
+        del soil_moisture[self.soil_moisture_by_voltage[str(point1)]]
+        point2 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
 
         return (point1, point2)
 
     def find_vwc(self, voltage):
-        if voltage <= SoilMoistureConfig.soil_moisture[0]:
+        if voltage <= self.soil_moisture[0]:
             return 0
 
-        v1, v2 = self.find_closest_voltages(voltage)
-        point1 = Point(vwc=SoilMoistureConfig.soil_moisture_by_voltage[str(v1)], voltage=v1)
-        point2 = Point(vwc=SoilMoistureConfig.soil_moisture_by_voltage[str(v2)], voltage=v2)
+        v1, v2 = self.find_closest_voltages(voltage=voltage, soil_moisture=self.soil_moisture)
+        point1 = Point(vwc=self.soil_moisture_by_voltage[str(v1)], voltage=v1)
+        point2 = Point(vwc=self.soil_moisture_by_voltage[str(v2)], voltage=v2)
         m = self.find_slope(point1, point2)
 
         vwc = m * (voltage - point1.y) + point1.x
@@ -75,7 +100,7 @@ class SoilMoisture(AnalogDevice):
         if vwc >= 55:
             return 100
 
-        rw = 100 * ( vwc / 55 )
+        rw = 100 * (vwc / 55)
 
         return rw
 
@@ -90,6 +115,6 @@ class SoilMoisture(AnalogDevice):
 
 
 class Point:
-    def __init__ (self, vwc, voltage):
+    def __init__(self, vwc, voltage):
         self.x = vwc
         self.y = voltage
