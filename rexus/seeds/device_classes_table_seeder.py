@@ -18,7 +18,7 @@ class DeviceClassesTableSeeder(Seeder):
         self.db.table(self.table).insert({
             'id': 2,
             'name': 'ADC - pi-16adc',
-            'file': 'ADC_pi_16'
+            'file': 'adc_pi_16'
         })
 
         self.db.table(self.table).insert({
