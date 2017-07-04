@@ -1,5 +1,6 @@
 from orator.seeds import Seeder
 
+
 class DeviceClassesTableSeeder(Seeder):
 
     table = 'device_classes'
@@ -37,4 +38,3 @@ class DeviceClassesTableSeeder(Seeder):
             'name': 'Soil Moisture - VH400',
             'file': 'soil_moisture_vh400'
         })
-

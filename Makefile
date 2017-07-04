@@ -19,13 +19,7 @@ test-install: venv
 unit-test: venv
 	. venv/bin/activate; python -m unittest discover tests/
 
-check: venv flake unit-test
-
-analysis:
-	. venv/bin/activate; flake8 $(PROJECT)/*.py tests/*.py
-
-init:
-	pip install -r requirements.txt;
+check: venv flake
 
 test: test-install
 	. venv/bin/activate; py.test tests/
@@ -35,6 +29,7 @@ install: venv
 	. venv/bin/activate; pip install --editable .
 
 develop: install
+	# TODO: Setup docker
 
 clean:
 	rm -rf venv
@@ -48,13 +43,3 @@ clean:
 	rm -rf *.egg-info
 	rm -rf build
 	rm -rf dist
-
-zip: $(PROJECT).zip
-
-$(PROJECT).zip: clean install
-	rm -rf build ; \
-	mkdir build ; \
-	cp -R marvin/* build/ ; \
-	cp -R venv/lib/python2.7/site-packages/* build/ ; \
-	pushd build/ ; \
-	zip -x '*.pyc' -r ../marvin.zip .

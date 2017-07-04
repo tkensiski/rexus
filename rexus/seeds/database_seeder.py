@@ -6,6 +6,7 @@ from rexus.seeds.device_types_table_seeder import DeviceTypesTableSeeder
 from rexus.seeds.device_formulas_table_seeder import DeviceFormulasTableSeeder
 from rexus.seeds.devices_table_seeder import DevicesTableSeeder
 
+
 class DatabaseSeeder(Seeder):
 
     def run(self):
@@ -17,4 +18,3 @@ class DatabaseSeeder(Seeder):
         self.call(DeviceTypesTableSeeder)
         self.call(DeviceFormulasTableSeeder)
         self.call(DevicesTableSeeder)
-

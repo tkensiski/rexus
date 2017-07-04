@@ -7,6 +7,7 @@ from rexus.config import Main as MainConfig
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
+
 class DeviceLoader(object):
     device_classes = {
         # class_name : getattr(module, class_name)
@@ -20,7 +21,7 @@ class DeviceLoader(object):
                 device_type=device_type))
             return self.device_classes.get(device_type)
 
-        return _load_device_class(device_type=device_type)
+        return self._load_device_class(device_type=device_type)
 
     def _convert_device_type_to_class_name(self, device_type):
         device_type = device_type.replace('_', ' ')
@@ -43,6 +44,8 @@ class DeviceLoader(object):
     def _memoize_device_class(self, device_type, device_class):
         if device_type in self.device_classes:
             return True, self.device_classes.get(device_type)
+
+        class_name = self._convert_device_type_to_class_name(device_type)
 
         self.device_classes[class_name] = device_class
 
@@ -86,7 +89,7 @@ class Interface(object):
             device_type = MainConfig.device_types.get(device_config.get('type_id'))
             device_class = device_loader.load_device_class(device_type=device_type)
 
-            channels[i] = device_class(
+            channels[channel] = device_class(
                 config=device_config,
                 interface=self,
                 channel=channel

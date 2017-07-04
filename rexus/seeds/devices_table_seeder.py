@@ -1,6 +1,7 @@
 from orator.seeds import Seeder
 import json
 
+
 class DevicesTableSeeder(Seeder):
 
     table = 'devices'
@@ -14,7 +15,7 @@ class DevicesTableSeeder(Seeder):
             'name': 'Rexus',
             'device_type_id': 1,
             'extra_data': json.dumps({
-                "interface_ids": [ 2 ]
+                "interface_ids": [2]
             })
         })
 
@@ -68,4 +69,3 @@ class DevicesTableSeeder(Seeder):
             'name': 'Soil Temp',
             'extra_data': json.dumps({})
         })
-

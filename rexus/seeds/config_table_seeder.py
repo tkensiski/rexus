@@ -1,3 +1,5 @@
+import os
+
 from orator.seeds import Seeder
 
 
@@ -14,13 +16,19 @@ class ConfigTableSeeder(Seeder):
             'value': 'Rexus'
         })
 
+        VERSION_FILE = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            '..', '..', 'VERSION'
+        )
+        with open(VERSION_FILE) as f:
+            version = f.read().strip()
+
         self.db.table(self.table).insert({
             'key': 'version',
-            'value': 'True'
+            'value': version
         })
 
         self.db.table(self.table).insert({
             'key': 'mock_channels',
             'value': 'True'
         })
-

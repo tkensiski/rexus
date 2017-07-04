@@ -7,3 +7,4 @@ rexus.zip
 venv
 .DS_STORE
 *.pyc
+.notes
