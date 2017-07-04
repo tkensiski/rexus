@@ -3,9 +3,12 @@ from setuptools import setup, find_packages
 with open('README.md') as f:
     readme = f.read()
 
+with open('VERSION') as f
+    version = f.read().strip()
+
 setup(
     name='rexus',
-    version='0.0.1',
+    version=version,
     description="Hydropoic Grow Automation",
     long_description=readme,
     author='Trevor Kensiski',
