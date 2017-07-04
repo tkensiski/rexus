@@ -1,3 +1,7 @@
+from rexus.devices import Device
+from rexus.config import Main as MainConfig
+
+
 class AnalogDevice(Device):
 
     def __init__(self, config, interface, channel):

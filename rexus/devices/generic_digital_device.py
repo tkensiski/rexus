@@ -1,7 +1,10 @@
+from rexus.devices import Device
+
+
 class DigitalDevice(Device):
 
     def __init__(self, config, interface):
-        super(DigitalInputDevice, self).__init__(config=config, interface=interface)
+        super(DigitalDevice, self).__init__(config=config, interface=interface)
 
         self.active = None
 
