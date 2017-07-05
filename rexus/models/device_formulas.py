@@ -6,6 +6,6 @@ from rexus import models
 
 class DeviceFormula(Model):
 
-    @has_one
+    @has_one('id', 'device_type_id')
     def device_type(self):
         return models.device_types.DeviceType
