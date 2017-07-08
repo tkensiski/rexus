@@ -10,8 +10,11 @@ class CreateDeviceClassesTable(Migration):
         with self.schema.create('device_classes') as table:
             table.increments('id').unsigned()
             table.timestamps()
-            table.string('name').unique()
+            table.string('name')
             table.string('file')
+            table.string('klass')
+
+            table.unique(['name', 'file'])
 
     def down(self):
         """

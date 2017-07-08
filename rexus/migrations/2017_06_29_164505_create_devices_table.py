@@ -12,7 +12,7 @@ class CreateDevicesTable(Migration):
             table.timestamps()
             table.integer('device_type_id').unsigned()
             table.string('name')
-            table.json('extra_data')
+            table.json('config')
 
             table.unique(['name'])
 

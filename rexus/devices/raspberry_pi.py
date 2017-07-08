@@ -1,9 +1,10 @@
 from __future__ import division
 import logging
+import json
 
-from rexus.config import Main as MainConfig
-
-from rexus.devices import DeviceLoader
+from ..models import config, devices, device_classes, device_formulas, device_types
+from rexus import Rexus
+from device_loader import DeviceLoader
 
 # These are imported by setup_devices
 # from rexus.devices.{DeviceType} import {DeviceType}
@@ -12,51 +13,58 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
-class RaspberryPi(object):
-
-    # Make sure we keep track of what bus addresses that we init
-    # so we dont init double and rather alert that theres a duplicate
-    # address in use
-    bus_addresses = []
-
-    interfaces = {
-        # interface_id: <DeviceType (Interface)>,
-    }
-
+class RaspberryPi(Rexus):
     def __init__(self, config):
-        self.config = config
-        self.interfaces = {}
-        self.setup_interfaces()
-        self.setup_devices()
+        super(RaspberryPi, self).__init__(config=config)
+        logger.debug('Initializing RaspberryPi')
 
     def setup_interfaces(self):
         # Loop the adc_ids (device ids)
-        for ID in self.config.interface_ids:
-            interface_config = MainConfig.devices.get(ID)
-            bus_id = interface_config.get('address')
-            interface_name = interface_config.get('name')
+        for ID in self.config['interface_ids']:
+            interface = devices.Device \
+                .with_('device_type', 'device_type.device_class') \
+                .where('id', ID) \
+                .first()
 
-            if bus_id in self.bus_addresses:
-                raise Exception(
-                    ('The I2C bus conflict for device {device_name} using address '
-                     '{address}, resolve conflict to use this device.').format(
-                        device_name=interface_name,
-                        address=interface_config.get('address')
-                    )
-                )
+            device_klass = interface.device_type.device_class
 
-            interface_type_id = interface_config.get('type_id')
-            device_type = MainConfig.device_types.get(interface_type_id)
-            device_class = DeviceLoader.load_device_class(device_type=device_type)
+            logger.info('Loading device class for {type}'.format(type=interface.name))
+            logger.debug('Loading class {klass} from {file}'.format(
+                klass=device_klass.klass,
+                type=interface.device_type.name,
+                file='rexus/devices/{file}.py'.format(file=device_klass.file)
+            ))
+
+            device_class = DeviceLoader().load_device_class(
+                device_type=interface.device_type,
+                device_class=device_klass
+            )
 
             # Setup the interface!
-            self.interfaces[ID] = device_class(config=interface_config)
+            interface_device = self._load_interface(
+                device_class=device_class,
+                device=interface
+            )
 
-            # Now its channels
-            try:
-                self.interfaces[ID].setup_channels(adc_id=ID, config=interface_config)
-            except Exception as e:
-                logger.error(
-                    ('Something went wrong when setting up channels on '
-                     'the {name} interface: {error}').format(name=interface_name, error=e)
-                )
+            if interface_device is False:
+                logger.error('Unable to load interface device {name}'.format(name=interface.name))
+            else:
+                logger.info('{name} loaded successfully'.format(name=interface.name))
+                self.interfaces[interface.id] = interface_device
+
+    def _load_interface(self, device_class, device):
+        device_config = json.loads(device.config)
+
+        if self.is_conflicting_bus(interface_config['address']) is True:
+            logger.error('Bus ID is in conflict for this device. Resolve this conflict to load')
+            return False
+
+        logger.info('loading interface device {name} with config: {conf}'.format(
+            name=device.name, conf=device_config
+        ))
+
+        interface = device_class(config=device_config)
+        if interface.setup_interface() is False:
+            return False
+
+        return interface

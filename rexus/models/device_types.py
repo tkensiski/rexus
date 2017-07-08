@@ -15,5 +15,5 @@ class DeviceType(Model):
         return models.device_classes.DeviceClass
 
     @has_many('device_type_id', 'id')
-    def device_formula(self):
+    def device_formulas(self):
         return models.device_formulas.DeviceFormula

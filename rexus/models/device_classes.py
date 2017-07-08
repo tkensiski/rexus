@@ -7,5 +7,5 @@ from rexus import models
 class DeviceClass(Model):
 
     @has_many('device_class_id', 'id')
-    def device_type(self):
+    def device_types(self):
         return models.device_types.DeviceType

@@ -14,7 +14,7 @@ class DevicesTableSeeder(Seeder):
             'id': 1,
             'name': 'Rexus',
             'device_type_id': 1,
-            'extra_data': json.dumps({
+            'config': json.dumps({
                 "interface_ids": [2]
             })
         })
@@ -23,7 +23,8 @@ class DevicesTableSeeder(Seeder):
             'id': 2,
             'name': 'ADC',
             'device_type_id': 7,
-            'extra_data': json.dumps({
+            'config': json.dumps({
+                'address': 76,
                 'channels': {
                     # channel # : Device ID
                     0: None,
@@ -49,23 +50,23 @@ class DevicesTableSeeder(Seeder):
         self.db.table(self.table).insert({
             'device_type_id': 3,
             'name': 'Air Temp',
-            'extra_data': json.dumps({})
+            'config': json.dumps({})
         })
 
         self.db.table(self.table).insert({
             'device_type_id': 4,
             'name': 'Relative Humidity',
-            'extra_data': json.dumps({})
+            'config': json.dumps({})
         })
 
         self.db.table(self.table).insert({
             'device_type_id': 8,
             'name': 'Soil Moisture',
-            'extra_data': json.dumps({})
+            'config': json.dumps({})
         })
 
         self.db.table(self.table).insert({
             'device_type_id': 2,
             'name': 'Soil Temp',
-            'extra_data': json.dumps({})
+            'config': json.dumps({})
         })

@@ -1,33 +1,24 @@
 from __future__ import division
 import logging
 
-from rexus.devices import AnalogDevice
+from rexus.devices.analog_device import AnalogDevice
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-"""
-This SoilMoisture class supports the VH400 from vegetronix
-https://www.vegetronix.com/Products/VH400/
-
-Why this sensor over other cheaper ones:
-'Because our probe measures the dielectric constant of the soil using
-transmission line techniques, it is insensitive to water salinity, and will
-not corrode over time as does conductivity based probes. Our probes are
-small, rugged, and low power.'
-"""
-
 
 class SoilMoisture(AnalogDevice):
-    config = None
-    interface = None
-    input_position = None
+    """
+    This SoilMoisture class supports the VH400 from vegetronix
+    https://www.vegetronix.com/Products/VH400/
 
-    raw_value = None
-    raw_voltage = None
+    Why this sensor over other cheaper ones:
+    'Because our probe measures the dielectric constant of the soil using
+    transmission line techniques, it is insensitive to water salinity, and will
+    not corrode over time as does conductivity based probes. Our probes are
+    small, rugged, and low power.' - vegetronix
+    """
 
-    vwc = None
-    rvwc = None
 
     # VWC to Voltage of the sensor
     # Number of points will dictate the Human readable % so that way after a
@@ -59,6 +50,12 @@ class SoilMoisture(AnalogDevice):
             input_position=input_position
         )
 
+        raw_value = None
+        raw_voltage = None
+
+        vwc = None
+        rvwc = None
+
         for key, value in self.soil_moisture.iteritems():
             self.soil_moisture_by_voltage[str(value)] = key
 
@@ -69,29 +66,33 @@ class SoilMoisture(AnalogDevice):
 
         return slope
 
-    def find_closest_voltages(self, voltage, soil_moisture):
-        point1 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
-        soil_moisture = dict(soil_moisture)
-        del soil_moisture[self.soil_moisture_by_voltage[str(point1)]]
-        point2 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
+    def find_closest_voltages(self, voltage):
+        # Make a dupe so we dont modify the real dict
+        soil_moisture = dict(self.soil_moisture)
 
-        return (point1, point2)
+        v1 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
+        del soil_moisture[self.soil_moisture_by_voltage[str(v1)]]
+        v2 = min(soil_moisture.values(), key=lambda x: abs(x-voltage))
+
+        return (v1, v2)
 
     def find_vwc(self, voltage):
         if voltage <= self.soil_moisture[0]:
             return 0
 
-        v1, v2 = self.find_closest_voltages(voltage=voltage, soil_moisture=self.soil_moisture)
-        point1 = Point(vwc=self.soil_moisture_by_voltage[str(v1)], voltage=v1)
-        point2 = Point(vwc=self.soil_moisture_by_voltage[str(v2)], voltage=v2)
+        v1, v2 = self.find_closest_voltages(voltage=voltage)
+        vwc1 = self.soil_moisture_by_voltage[str(v1)]
+        vwc2 = self.soil_moisture_by_voltage[str(v2)]
+        point1 = Point(vwc=vwc1, voltage=v1)
+        point2 = Point(vwc=vwc2, voltage=v2)
         m = self.find_slope(point1, point2)
 
-        vwc = m * (voltage - point1.y) + point1.x
+        real_vwc = m * (voltage - point1.y) + point1.x
 
-        if vwc > 100:
-            vwc = 100
+        if real_vwc > 100:
+            real_vwc = 100
 
-        return vwc
+        return real_vwc
 
     def find_relative_vwc(self, vwc):
         if vwc <= 0:
@@ -100,9 +101,9 @@ class SoilMoisture(AnalogDevice):
         if vwc >= 55:
             return 100
 
-        rw = 100 * (vwc / 55)
+        rvwc = 100 * (vwc / 55)
 
-        return rw
+        return rvwc
 
     # Return the value that we want to display
     def get_value(self):

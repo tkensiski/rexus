@@ -1,4 +1,4 @@
 import logging
 
-LOG_LEVEL = logging.DEBUG
-LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+log_level = logging.DEBUG
+log_format = "[%(asctime)s][%(levelname)s][%(name)s.%(module)s:%(funcName)s:%(lineno)d] %(message)s"
