@@ -1,8 +1,24 @@
 # Import flask and template operators
-from flask import Flask, render_template
+from flask import Flask, render_template, logging
+import logging
+from logging.handlers import RotatingFileHandler
+import pprint
 
 # Define the WSGI application object
 app = Flask(__name__)
+
+file_handler = RotatingFileHandler(
+    'logs/gui.log',
+    maxBytes=1000 * 1000 * 100,
+    backupCount=2
+)
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter("[%(asctime)s][%(levelname)s][%(name)s.%(module)s:%(lineno)d] %(message)s")
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
+
+for llogger in app.logger.handlers:
+    llogger.setFormatter(formatter)
 
 # Configurations
 app.config.from_object('config')
@@ -23,3 +39,5 @@ app.register_blueprint(data_module)
 app.register_blueprint(grow_module)
 app.register_blueprint(settings_module)
 app.register_blueprint(splash_module)
+
+app.logger.info('Rexus GUI Loaded')
