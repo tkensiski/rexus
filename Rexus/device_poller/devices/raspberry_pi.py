@@ -2,7 +2,8 @@ from __future__ import division
 import logging
 import json
 
-from ..models import config, devices, device_classes, device_formulas, device_types
+from rexus import config
+from ..models import devices, device_classes, device_formulas, device_types
 from rexus import Rexus
 from device_loader import DeviceLoader
 
@@ -37,7 +38,8 @@ class RaspberryPi(Rexus):
 
             device_class = DeviceLoader().load_device_class(
                 device_type=interface.device_type,
-                device_class=device_klass
+                device_class=device_klass,
+                mock=
             )
 
             # Setup the interface!
@@ -55,7 +57,7 @@ class RaspberryPi(Rexus):
     def _load_interface(self, device_class, device):
         device_config = json.loads(device.config)
 
-        if self.is_conflicting_bus(interface_config['address']) is True:
+        if self.is_conflicting_bus(device_config['address']) is True:
             logger.error('Bus ID is in conflict for this device. Resolve this conflict to load')
             return False
 

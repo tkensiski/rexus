@@ -1,5 +1,7 @@
 import logging
 
+from ..models import config_model
+
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
@@ -21,6 +23,10 @@ class Rexus(object):
 
         # interface_id: <DeviceType (Interface)>,
         self.interfaces = {}
+
+    def _load_mock_state(self):
+        mock_value = config_model.Config.where('key', 'mock_interfaces').first()
+        if mock_value
 
     def is_conflicting_bus(self, bus_id, keep_track=True):
         """

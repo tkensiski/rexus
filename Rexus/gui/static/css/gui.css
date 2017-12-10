@@ -1,0 +1,74 @@
+body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
+#container {
+  width: 800px;
+  height: 480px;
+  border: 1px solid #000;
+  overflow: hidden;
+  margin: 150px auto;
+}
+
+#menu {
+  max-width: 20%;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background-color: #1e73be;
+  color: #fff;
+  border-right: 2px solid #0b579a;
+}
+#menu h1 { text-align: center; }
+#menu ul { padding: 0; margin: 0; }
+#menu ul li {
+  list-style: none;
+  padding: 16px 0px;
+  border-bottom: 1px solid #e4e4e4;
+}
+#menu ul li ul li { display: none; }
+#menu ul li.active ul { display: block; background-color: #56acf9; color: #1e73be; width: 100%; margin: 10px 0 0; }
+#menu ul li.active ul li { display: block; padding-left: 10px; }
+#menu a:link, #menu a:visited { color: #ffffff; text-decoration: none; padding: 20px 30px 20px 5px; }
+#menu ul li.active ul li a:hover { color: #1e73be; }
+#menu ul li.dropdown > a:after {
+  content: '\27A4';
+  padding-left: 10px;
+  font-size: 10px;
+  display: inline-block;
+  transition: transform 100ms;
+  transform-origin: 15px 6px;
+}
+
+#menu ul li.dropdown.active > a:after {
+  transform: rotate(90deg);
+}
+
+#overview { max-width: 75%; width: 100%; max-height: 480px; overflow: scroll; background-color: #ffffff; padding: 10px;}
+
+.row .icon { display: inline-block; width: 100px; height: 100px; border: 1px solid #000000; margin: 3px; padding: 3px; }
+
+#menu,#overview {
+  float: left;
+  min-height: 300px;
+  padding: 0px;
+}
+
+
+
+.pager {
+  display: block;
+  text-align: center;
+  margin-top:20px;
+  position: relative;
+  bottom: 0px;
+}
+
+
+.pager span { cursor: pointer; padding: 4px; }
+.pager .active {
+  color: #56ACD0;
+}
+
+.open_menu { float: right; display: none; }
+.open_menu:hover, .close_menu:hover { cursor: pointer; }
+
+/* body ui */
+.block { width: 48%; height: 100%; margin: 10px 0 10px 1.5%; display: inline-block; }

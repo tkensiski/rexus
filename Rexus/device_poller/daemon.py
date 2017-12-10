@@ -3,8 +3,8 @@ import sys
 import json
 
 from rexus import database
-from rexus import config as rexus_config
-from rexus.models import config, devices, device_classes, device_formulas, device_types
+from rexus import config
+from rexus.models import devices, device_classes, device_formulas, device_types
 from rexus.devices.device_loader import DeviceLoader
 
 logger = logging.getLogger('rexus')

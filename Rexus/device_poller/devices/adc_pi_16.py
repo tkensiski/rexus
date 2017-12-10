@@ -1,9 +1,9 @@
 from __future__ import division
 import logging
-from smbus import SMBus
 import time
+from smbus2 import SMBus
 
-from rexus.devices import Interface
+from interface import Interface
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

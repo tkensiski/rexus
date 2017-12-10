@@ -28,8 +28,12 @@ install: venv
 	. venv/bin/activate; pip install --upgrade pip
 	. venv/bin/activate; pip install --editable .
 
-develop: install
-	# TODO: Setup docker
+run_gui: install
+	. venv/bin/activate && \
+	cd rexus/gui && \
+	export FLASK_APP=__init__.py && \
+	export FLASK_DEBUG=1 && \
+	python -m flask run
 
 clean:
 	rm -rf venv

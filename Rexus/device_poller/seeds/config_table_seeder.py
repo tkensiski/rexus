@@ -32,3 +32,8 @@ class ConfigTableSeeder(Seeder):
             'key': 'mock_channels',
             'value': 'True'
         })
+
+        self.db.table(self.table).insert({
+            'key': 'mock_interfaces',
+            'value': 'True'
+        })
