@@ -122,8 +122,9 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
   transform: rotate(90deg);
 }
 
-#overview { max-width: 75%; width: 100%; max-height: 480px; overflow: scroll; background-color: #ffffff; padding: 10px;}
-
+#container .page { display: none; }
+#overview.page { display: block;}
+.page {  max-width: 73%; width: 100%; max-height: 480px; overflow: scroll; background-color: #ffffff; padding: 10px; }
 .row .icon { display: inline-block; width: 100px; height: 100px; border: 1px solid #000000; margin: 3px; padding: 3px; }
 .row.col3 .icon { width: 30%; }
 #menu,#overview {

@@ -13,6 +13,25 @@ $(document).ready( function() {
     $(this).css('display','none');
   });
 
+
+
+
+
+
+
+
+
+//
+
+  $('#menu a').on('click', function(){
+    var name = $(this).attr('name');
+    $('#container .page').css('display','none');
+    $('#container #'+name).css('display','block');
+  });
+
+
+// Pager navigation
+
   $('.pager span').on('click', function(){
       $('.pager span').removeClass('active');
       $(this).addClass('active');
@@ -31,6 +50,7 @@ $(document).ready( function() {
       $('.close_menu').css('display','block');
   });
 
+// Menu collapsing / expanding
 
   $('#grow_menu_page').on('click', function(){
     $('#grow_menu').css('display','block');
