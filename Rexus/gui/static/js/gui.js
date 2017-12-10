@@ -14,7 +14,7 @@ $(document).ready( function() {
   });
   
   $('.close_menu').on('click', function(){
-      $('#menu').css('margin-left','-15%');
+      $('#menu').css('margin-left','-17%');
       $(this).css('display','none');
       $('.open_menu').css('display','block');
   })

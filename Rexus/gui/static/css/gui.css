@@ -68,7 +68,8 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
   color: #56ACD0;
 }
 
-.open_menu { float: right; display: none; }
+.open_menu { float: right; display: none; padding-right: 5px; }
+.close_menu { padding-left: 5px; }
 .open_menu:hover, .close_menu:hover { cursor: pointer; }
 
 /* body ui */
