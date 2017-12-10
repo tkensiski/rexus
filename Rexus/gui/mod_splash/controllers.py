@@ -9,4 +9,4 @@ mod_splash = Blueprint('splash', __name__, url_prefix='/')
 # Set the route and accepted methods
 @mod_splash.route('/', methods=['GET'])
 def dashboard():
-    return render_template("splash/index.html")
+    return render_template("index.html")

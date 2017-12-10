@@ -5,10 +5,60 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/gui.css') }}" />
     </head>
     <body>
+        <section id="splash">
+            <h1>Rexus</h1>
+            <ul>
+                <li>21:04</li>
+                <li>2017 - 12 - 9</li>
+                <li>72F</li>
+                <li>50%RH</li>
+                <li>70%WV</li>
+            </ul>
+        </section>
         <div id="container">
             <div id="menu">
-                <div id="page1">
-                    <h1>Rexus</h1>
+                <div id="grow_menu">
+                    <h1>Rexus - Grow Menu</h1>
+                    <ul class="page1">
+                        <li class="active dropdown"><a href="">Current Crop</a>
+                          <ul>
+                              <li><a href="">Feeding Schedule</a></li>
+                              <li><a href="">Data Charts</a></li>
+                              <li><a href="">Grow Log</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown"><a href="">Section 2</a>
+                            <ul>
+                                <li><a href="">Subsection 1</a></li>
+                                <li><a href="">Subsection 2</a></li>
+                                <li><a href="">Subsection 3</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">Section 3</a></li>
+                    </ul>
+                </div>
+                <div id="data_menu">
+                    <h1>Rexus - Data Menu</h1>
+                    <ul class="page1">
+                        <li class="active dropdown"><a href="">Current Crop</a>
+                          <ul>
+                              <li><a href="">Feeding Schedule</a></li>
+                              <li><a href="">Data Charts</a></li>
+                              <li><a href="">Grow Log</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown"><a href="">Section 2</a>
+                            <ul>
+                                <li><a href="">Subsection 1</a></li>
+                                <li><a href="">Subsection 2</a></li>
+                                <li><a href="">Subsection 3</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="">Section 3</a></li>
+                    </ul>
+                </div>
+                <div id="settings_menu">
+                    <h1>Rexus - Settings Menu</h1>
                     <ul class="page1">
                         <li class="active dropdown"><a href="">Current Crop</a>
                           <ul>
@@ -28,14 +78,19 @@
                     </ul>
                 </div>
                 <span class="pager">
-                    <span class="pager1 active">&#9679;</span>
-                    <span class="pager2">&#9679;</span>
-                    <span class="pager3">&#9679;</span>
+                    <span id="grow_menu_page" class="pager1 active">&#9679;</span>
+                    <span id="data_menu_page"  class="pager2">&#9679;</span>
+                    <span id="settings_menu_page"  class="pager3">&#9679;</span>
                 </span>
                 <span class="close_menu"><-</span>
                 <span class="open_menu">-></span>
             </div>
             <div id="overview">
+                <div class="row col3">
+                    <a href="" class="icon" >Data</a>
+                    <a href="" class="icon">Grow</a>
+                    <a href="" class="icon">Settings</a>
+                </div>
                 <div class="row">
                     <a href="" class="icon"><img src="" ></a>
                     <a href="" class="icon"><img src="" ></a>

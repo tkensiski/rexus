@@ -1,21 +1,100 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
+
+#splash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #ff0000;
+  background-color: #000000;
+  z-index: 999999;
+}
+#splash:hover { cursor: pointer; }
+#splash h1 {
+  color: #ff0000;
+  font-size: 10vw;
+  margin: 0px;
+}
+
+#splash ul { margin: 0; }
+#splash ul li {
+  color: #ffffff;
+  display: inline-block;
+  padding: 10px;
+}
+
 #container {
   width: 800px;
   height: 480px;
+  min-width: 800px;
+  min-height: 480px;
+  max-width: 480px;
+  max-height: 480px;
   border: 1px solid #000;
   overflow: hidden;
   margin: 150px auto;
+  background-color: #fff;
 }
 
 #menu {
-  max-width: 20%;
+  max-width: 24%;
   width: 100%;
   height: 100%;
   min-height: 100%;
   background-color: #1e73be;
   color: #fff;
   border-right: 2px solid #0b579a;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 #menu h1 { text-align: center; }
 #menu ul { padding: 0; margin: 0; }
@@ -45,7 +124,7 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
 #overview { max-width: 75%; width: 100%; max-height: 480px; overflow: scroll; background-color: #ffffff; padding: 10px;}
 
 .row .icon { display: inline-block; width: 100px; height: 100px; border: 1px solid #000000; margin: 3px; padding: 3px; }
-
+.row.col3 .icon { width: 30%; }
 #menu,#overview {
   float: left;
   min-height: 300px;
@@ -53,13 +132,15 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
 }
 
 
-
+#grow_menu, #data_menu, #settings_menu { display: inline-block; float: left; }
+#data_menu, #settings_menu { display: none; }
 .pager {
   display: block;
   text-align: center;
   margin-top:20px;
   position: relative;
   bottom: 0px;
+  clear: both;
 }
 
 
