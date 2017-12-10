@@ -13,7 +13,9 @@ $(document).ready( function() {
     $(this).css('display','none');
   });
 
-
+  $('#splash_popup').on('click',function(){
+    $('#splash').css('display','block');
+  });
 
 
 

@@ -122,7 +122,11 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
   transform: rotate(90deg);
 }
 
+
+#container { position: relative; }
+
 #container .page { display: none; }
+
 #overview.page { display: block;}
 .page {  max-width: 73%; width: 100%; max-height: 480px; overflow: scroll; background-color: #ffffff; padding: 10px; }
 .row .icon { display: inline-block; width: 100px; height: 100px; border: 1px solid #000000; margin: 3px; padding: 3px; }
@@ -140,7 +144,7 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
 .pager {
   display: block;
   position: absolute;
-  bottom: 3px;
+  bottom: 33px;
   text-align: center;
   width: 100%;
 }
@@ -151,9 +155,16 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
   color: #56ACD0;
 }
 
-.open_menu { display: none; padding: 10px 5px 3px 10px; position: absolute; bottom: 0px; right: 0px; }
-.close_menu { padding-left: 5px; position: absolute; bottom: 0; left: 0px; padding: 10px 10px 3px 10px; }
+.open_menu { display: none; padding: 10px 5px 3px 10px; position: absolute; bottom: 30px; right: 0px; }
+.close_menu { padding-left: 5px; position: absolute; bottom: 30px; left: 0px; padding: 10px 10px 3px 10px; }
 .open_menu:hover, .close_menu:hover { cursor: pointer; }
+
+
+/* Live Bar */
+#livebar { position: absolute; left: 0; bottom: 0; width: 100%; height: 20px; padding: 5px 2px; background-color: #000000; color: #ffffff; }
+#livebar ul li { display: inline-block; margin: 0 auto; }
+
+#splash_popup { float: right; padding-right: 10px; }
 
 /* body ui */
 .block { width: 48%; height: 100%; margin: 10px 0 10px 1.5%; display: inline-block; }
