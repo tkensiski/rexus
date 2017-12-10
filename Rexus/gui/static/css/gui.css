@@ -139,7 +139,7 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
 .pager {
   display: block;
   position: absolute;
-  bottom: 0px;
+  bottom: 3px;
   text-align: center;
   width: 100%;
 }
@@ -150,7 +150,7 @@ body { background-color: #000; margin: 0; padding: 0; min-height: 100%; }
   color: #56ACD0;
 }
 
-.open_menu { display: none; padding: 10px 5px 3px 10px; position: absolute; bottom: 3px; right: 0px; }
+.open_menu { display: none; padding: 10px 5px 3px 10px; position: absolute; bottom: 0px; right: 0px; }
 .close_menu { padding-left: 5px; position: absolute; bottom: 0; left: 0px; padding: 10px 10px 3px 10px; }
 .open_menu:hover, .close_menu:hover { cursor: pointer; }
 
