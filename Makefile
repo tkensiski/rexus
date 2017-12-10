@@ -1,6 +1,9 @@
 PROJECT = rexus
-
 VIRTUALENV = $(shell which virtualenv)
+DEVICE_IP = 172.19.19.139
+DEVICE_HOSTNAME = rexus.local
+DEVICE_USER = pi
+DEVICE_PW = raspberry
 
 ifeq ($(strip $(VIRTUALENV)),)
 	VIRTUALENV = /usr/local/python/bin/virtualenv
@@ -34,6 +37,34 @@ run_gui: install
 	export FLASK_APP=__init__.py && \
 	export FLASK_DEBUG=1 && \
 	python -m flask run
+
+setup_hosts:
+	echo "Make sure to run this as sudo"
+	echo "${DEVICE_IP}    ${DEVICE_HOSTNAME}" >> /etc/hosts
+
+init_device:
+	echo "Installing ssh-copy-id"
+	brew install ssh-copy-id
+	echo "Installing ssh key to raspberry pi"
+	ssh-copy-id pi@${DEVICE_IP}
+	echo "Flipping touchscreen to be right side up for stands"
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'sudo echo "lcd_rotate=2" > /boot/config.txt'
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'reboot'
+
+setup_device_python:
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'wget https://bootstrap.pypa.io/get-pip.py'
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'python get-pip.py'
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'pip install virtualenv'
+
+update_device:
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'rm -rf rexus && mkdir rexus'
+	scp -r -i ~/.ssh/id_rsa ./rexus ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	scp -r -i ~/.ssh/id_rsa ./Makefile ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	scp -r -i ~/.ssh/id_rsa ./setup.py ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	scp -r -i ~/.ssh/id_rsa ./requirements.txt ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	scp -r -i ~/.ssh/id_rsa ./VERSION ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	scp -r -i ~/.ssh/id_rsa ./LICENSE ${DEVICE_USER}@${DEVICE_IP}:~/rexus/
+	ssh -i ~/.ssh/id_rsa ${DEVICE_USER}@${DEVICE_IP} 'cd rexus && make install'
 
 clean:
 	rm -rf venv
