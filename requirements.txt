@@ -2,5 +2,6 @@ simpleeval==0.9.5
 orator==0.9.7
 PyMySQL==0.7.11
 flask==0.12.2
+flask-wtf==0.14.2
 influxdb==5.0.0
 jinja2==2.10
